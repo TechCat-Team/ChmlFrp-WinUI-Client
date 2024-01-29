@@ -31,56 +31,77 @@ public class TunnelInfo
 
 public class UserInfo
 {
-    public static string UserName
+    public string UserName
     {
         get; set;
     }
-    public static string UserImage
+    public string UserImage
     {
         get; set;
     }
-    public static string UserToken
+    public string UserToken
     {
         get; set;
     }
-    public static string RealName
+    public string RealName
     {
         get; set;
     }
-    public static string Bandwidth
+    public string Bandwidth
     {
         get; set;
     }
-    public static string Tunnel
+    public string Tunnel
     {
         get; set;
     }
-    public static string TunnelState
+    public string TunnelState
     {
         get; set;
     }
-    public static string Integral
+    public string Integral
     {
         get; set;
     }
-    public static string Term
+    public string Term
     {
         get; set;
     }
-    public static string UserGroup
+    public string UserGroup
     {
         get; set;
     }
-    public static string QQ
+    public string QQ
     {
         get; set;
     }
-    public static string Email
+    public string Email
     {
         get; set;
     }
-    public static string UserId
+    public string UserId
     {
         get; set;
+    }
+
+    public static UserInfo Get = new();
+    public static string SettingsPath = "settings.json";
+    public static bool TryLoadSettings()
+    {
+        bool result;
+        if (result = File.Exists(SettingsPath))
+        {
+            var uInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<UserInfo>(File.ReadAllText(SettingsPath));
+            if (result = (uInfo != null))
+            {
+                UserInfo.Get = uInfo;
+            }
+        }
+
+        return result;
+    }
+    public static void SaveSettings()
+    {
+        File.WriteAllText(SettingsPath, Newtonsoft.Json.JsonConvert.SerializeObject(Get));
     }
 }

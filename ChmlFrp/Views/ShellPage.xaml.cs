@@ -34,15 +34,15 @@ public sealed partial class ShellPage : Page
 
         DowFrpAsync();
 
-        if (!string.IsNullOrEmpty(UserInfo.UserToken))
+        if (!string.IsNullOrEmpty(UserInfo.Get.UserToken))
         {
             // 设置 TextBlock 文本的内容
-            usernameTextBlock.Text = UserInfo.UserName;
-            emailTextBlock.Text = UserInfo.Email;
-            userImgPicture.DisplayName = UserInfo.UserName;
+            usernameTextBlock.Text = UserInfo.Get.UserName;
+            emailTextBlock.Text = UserInfo.Get.Email;
+            userImgPicture.DisplayName = UserInfo.Get.UserName;
 
 
-            var imagePath = UserInfo.UserImage;
+            var imagePath = UserInfo.Get.UserImage;
 
             // 创建一个 BitmapImage 对象
             BitmapImage bitmapImage = new BitmapImage(new Uri(imagePath));
@@ -113,7 +113,7 @@ public sealed partial class ShellPage : Page
     private async void OnFooterButtonClick(object sender, RoutedEventArgs e)
     {
         // 如果app.usertoken没有数据(没有登录数据)，则允许点击块
-        if (string.IsNullOrEmpty(UserInfo.UserToken))
+        if (string.IsNullOrEmpty(UserInfo.Get.UserToken))
         {
             myProgressBar.Visibility = Visibility.Collapsed;
             // 加载一言
@@ -201,15 +201,15 @@ public sealed partial class ShellPage : Page
                         {
                             // 下载并缓存用户图标
                             var localImagePath = await CacheUserImage(userImg, returnedUsername);
-                            UserInfo.UserImage = localImagePath;
+                            UserInfo.Get.UserImage = localImagePath;
                             // 构建通知
                             var builder = new AppNotificationBuilder()
                             .AddText($"欢迎{returnedUsername}！")
                             .AddText("ChmlFrp登录成功！")
                             .SetAppLogoOverride(new Uri($"{localImagePath}"), AppNotificationImageCrop.Circle);
 
-                            var notificationManager = AppNotificationManager.Default;
-                            notificationManager.Show(builder.BuildNotification());
+                            //var notificationManager = AppNotificationManager.Default;
+                            ////notificationManager.Show(builder.BuildNotification());
                         }
                         else
                         {
@@ -218,52 +218,37 @@ public sealed partial class ShellPage : Page
                             .AddText($"欢迎{returnedUsername}！")
                             .AddText("ChmlFrp登录成功！");
 
-                            var notificationManager = AppNotificationManager.Default;
-                            notificationManager.Show(builder.BuildNotification());
+                            //var notificationManager = AppNotificationManager.Default;
+                            ////notificationManager.Show(builder.BuildNotification());
                         }
+                        // 保存用户信息到 App 属性中
+                        UserInfo.Get.UserName = returnedUsername;
+                        UserInfo.Get.UserToken = userToken;
+                        UserInfo.Get.RealName = realname;
+                        UserInfo.Get.Bandwidth = bandwidth;
+                        UserInfo.Get.Tunnel = tunnel;
+                        UserInfo.Get.TunnelState = tunnelstate;
+                        UserInfo.Get.Integral = integral;
+                        UserInfo.Get.Term = term;
+                        UserInfo.Get.UserGroup = usergroup;
+                        UserInfo.Get.QQ = qq;
+                        UserInfo.Get.Email = email;
+                        UserInfo.Get.UserId = userid;
                         // 如果用户勾选了自动登录。
                         if (AutoLoginCheckBox.IsChecked == true)
                         {
                             // 使用本地缓存保存用户信息
-                            ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-
-                            localSettings.Values["Username"] = returnedUsername;
-                            localSettings.Values["UserImg"] = UserInfo.UserImage;
-                            localSettings.Values["UserToken"] = userToken;
-                            localSettings.Values["Realname"] = realname;
-                            localSettings.Values["Bandwidth"] = bandwidth;
-                            localSettings.Values["Tunnel"] = tunnel;
-                            localSettings.Values["TunnelState"] = tunnelstate;
-                            localSettings.Values["Integral"] = integral;
-                            localSettings.Values["Term"] = term;
-                            localSettings.Values["UserGroup"] = usergroup;
-                            localSettings.Values["QQ"] = qq;
-                            localSettings.Values["Email"] = email;
-                            localSettings.Values["UserID"] = userid;
+                            UserInfo.SaveSettings();
                         }
-
-                        // 保存用户信息到 App 属性中
-                        UserInfo.UserName = returnedUsername;
-                        UserInfo.UserToken = userToken;
-                        UserInfo.RealName = realname;
-                        UserInfo.Bandwidth = bandwidth;
-                        UserInfo.Tunnel = tunnel;
-                        UserInfo.TunnelState = tunnelstate;
-                        UserInfo.Integral = integral;
-                        UserInfo.Term = term;
-                        UserInfo.UserGroup = usergroup;
-                        UserInfo.QQ = qq;
-                        UserInfo.Email = email;
-                        UserInfo.UserId = userid;
 
                         // 允许点击 Shell_Tunnel
                         Shell_Tunnel.IsEnabled = true;
                         // 设置 TextBlock 的文本为 App.LoggedInUsername 的内容
-                        usernameTextBlock.Text = UserInfo.UserName;
-                        emailTextBlock.Text = UserInfo.Email;
-                        userImgPicture.DisplayName = UserInfo.UserName;
+                        usernameTextBlock.Text = UserInfo.Get.UserName;
+                        emailTextBlock.Text = UserInfo.Get.Email;
+                        userImgPicture.DisplayName = UserInfo.Get.UserName;
 
-                        var imagePath = UserInfo.UserImage;
+                        var imagePath = UserInfo.Get.UserImage;
 
                         // 创建一个 BitmapImage 对象
                         BitmapImage bitmapImage = new BitmapImage(new Uri(imagePath));
@@ -272,6 +257,12 @@ public sealed partial class ShellPage : Page
                         userImgPicture.ProfilePicture = bitmapImage;
                         userImgPictureA.ProfilePicture = bitmapImage;
                         sender.Hide();
+                        if (ViewModel.NavigationService.Frame != null && 
+                            ViewModel.NavigationService.Frame.Content != null && 
+                            ViewModel.NavigationService.Frame.Content.GetType() == typeof(HomePage))
+                        {
+                            ViewModel.NavigationService.Frame.Content = new HomePage();
+                        }
                     }
                     else
                     {
@@ -320,7 +311,7 @@ public sealed partial class ShellPage : Page
     private async Task<string> CacheUserImage(string apiUserImg, string username)
     {
         // 获取本地文件夹
-        StorageFolder localFolder = ApplicationData.Current.LocalFolder;
+        StorageFolder localFolder = await StorageFolder.GetFolderFromPathAsync(UserDataPaths.GetDefault().LocalAppData);
 
         // 构建本地文件路径
         var fileName = $"{username}_userimg.jpg";
@@ -348,7 +339,7 @@ public sealed partial class ShellPage : Page
     private void ClearLocalSettings()
     {
         // 获取本地设置对象
-        ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+        /*ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
         // 列举的本地缓存信息的键
         string[] keysToClear = {
@@ -374,22 +365,23 @@ public sealed partial class ShellPage : Page
             {
                 localSettings.Values.Remove(key);
             }
-        }
+        }*/
 
 
-        UserInfo.UserName = null;
-        UserInfo.UserImage = null;
-        UserInfo.UserToken = null;
-        UserInfo.RealName = null;
-        UserInfo.Bandwidth = null;
-        UserInfo.Tunnel = null;
-        UserInfo.TunnelState = null;
-        UserInfo.Integral = null;
-        UserInfo.Term = null;
-        UserInfo.UserGroup = null;
-        UserInfo.QQ = null;
-        UserInfo.Email = null;
-        UserInfo.UserId = null;
+        UserInfo.Get.UserName = null;
+        UserInfo.Get.UserImage = null;
+        UserInfo.Get.UserToken = null;
+        UserInfo.Get.RealName = null;
+        UserInfo.Get.Bandwidth = null;
+        UserInfo.Get.Tunnel = null;
+        UserInfo.Get.TunnelState = null;
+        UserInfo.Get.Integral = null;
+        UserInfo.Get.Term = null;
+        UserInfo.Get.UserGroup = null;
+        UserInfo.Get.QQ = null;
+        UserInfo.Get.Email = null;
+        UserInfo.Get.UserId = null;
+        UserInfo.SaveSettings();
 
         // 设置 TextBlock 的文本为 App.LoggedInUsername 的内容
         usernameTextBlock.Text = "您尚未登录";
@@ -401,7 +393,7 @@ public sealed partial class ShellPage : Page
         .AddText("您的账户已退出登录");
 
         var notificationManager = AppNotificationManager.Default;
-        notificationManager.Show(builder.BuildNotification());
+        //notificationManager.Show(builder.BuildNotification());
 
         // 不允许点击 Shell_Tunnel
         Shell_Tunnel.IsEnabled = false;

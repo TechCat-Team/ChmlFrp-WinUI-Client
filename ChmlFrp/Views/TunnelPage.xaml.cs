@@ -66,7 +66,7 @@ public sealed partial class TunnelPage : Page
                     if (File.Exists(executablePath))
                     {
                         // 组装简易启动指令
-                        var Command = $"frpc.exe -u {UserInfo.UserToken} -p {tunnelId}";
+                        var Command = $"frpc.exe -u {UserInfo.Get.UserToken} -p {tunnelId}";
 
                         // 创建 ProcessStartInfo 对象来配置进程启动信息
                         ProcessStartInfo psi = new ProcessStartInfo
@@ -106,7 +106,7 @@ public sealed partial class TunnelPage : Page
                                     .AddText("映射启动成功");
 
                                 var notificationManager = AppNotificationManager.Default;
-                                notificationManager.Show(builder.BuildNotification());
+                                //notificationManager.Show(builder.BuildNotification());
                             }
                             else
                             {
@@ -117,7 +117,7 @@ public sealed partial class TunnelPage : Page
                                     .AddText("详细信息请前往日志页面查看");
 
                                 var notificationManager = AppNotificationManager.Default;
-                                notificationManager.Show(builder.BuildNotification());
+                                //notificationManager.Show(builder.BuildNotification());
                             }
 
                             process.WaitForExit();
@@ -143,7 +143,7 @@ public sealed partial class TunnelPage : Page
             if (outputTask.IsCompleted)
             {
                 var output = await outputTask;
-                if (output.Contains(UserInfo.UserToken))
+                if (output.Contains(UserInfo.Get.UserToken))
                 {
                     return true;
                 }

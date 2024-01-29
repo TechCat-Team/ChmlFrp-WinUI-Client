@@ -58,22 +58,22 @@ public sealed partial class HomePage : Page
             }
         }
 
-        if (!string.IsNullOrEmpty(UserInfo.UserToken))
+        if (!string.IsNullOrEmpty(UserInfo.Get.UserToken))
         {
             // 设置 TextBlock 文本的内容
-            usernameTextBlock.Text = UserInfo.UserName;
-            userImgPicture.DisplayName = UserInfo.UserName;
-            integralTextBlock.Text = UserInfo.Integral + "积分";
-            userid.Text = "用户ID：" + UserInfo.UserId;
-            username.Text = "用户名：" + UserInfo.UserName;
-            email.Text = "邮箱号：" + UserInfo.Email;
-            usergroup.Text = "权限组：" + UserInfo.UserGroup;
-            tunnel.Text = "隧道数：" + UserInfo.TunnelState + " / " + UserInfo.Tunnel + "条";
-            var bandwidthw = 4 * int.Parse(UserInfo.Bandwidth);
-            bandwidth.Text = "限带宽：" + UserInfo.Bandwidth + "m | " + bandwidthw + "m";
-            realname.Text = "实名状态：" + UserInfo.RealName;
+            usernameTextBlock.Text = UserInfo.Get.UserName;
+            userImgPicture.DisplayName = UserInfo.Get.UserName;
+            integralTextBlock.Text = UserInfo.Get.Integral + "积分";
+            userid.Text = "用户ID：" + UserInfo.Get.UserId;
+            username.Text = "用户名：" + UserInfo.Get.UserName;
+            email.Text = "邮箱号：" + UserInfo.Get.Email;
+            usergroup.Text = "权限组：" + UserInfo.Get.UserGroup;
+            tunnel.Text = "隧道数：" + UserInfo.Get.TunnelState + " / " + UserInfo.Get.Tunnel + "条";
+            var bandwidthw = 4 * int.Parse(UserInfo.Get.Bandwidth);
+            bandwidth.Text = "限带宽：" + UserInfo.Get.Bandwidth + "m | " + bandwidthw + "m";
+            realname.Text = "实名状态：" + UserInfo.Get.RealName;
 
-            var imagePath = UserInfo.UserImage;
+            var imagePath = UserInfo.Get.UserImage;
 
             // 创建一个 BitmapImage 对象
             BitmapImage bitmapImage = new BitmapImage(new Uri(imagePath));

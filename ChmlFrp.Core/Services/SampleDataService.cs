@@ -25,7 +25,7 @@ public class SampleDataService : ISampleDataService
     // 创建用于调用API的方法
     private async Task<IEnumerable<TunnelInfo>> FetchOrdersFromApiAsync()
     {
-        var userToken = UserInfo.UserToken;
+        var userToken = UserInfo.Get.UserToken;
         var apiUrl = $"https://panel.chmlfrp.cn/api/usertunnel.php?token={userToken}";
 
         var response = await _httpClient.GetStringAsync(apiUrl);

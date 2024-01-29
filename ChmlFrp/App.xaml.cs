@@ -88,13 +88,15 @@ public partial class App : Application
         // https://docs.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.application.unhandledexception.
     }
 
+
     protected async override void OnLaunched(LaunchActivatedEventArgs args)
     {
         base.OnLaunched(args);
 
         // 查询本地缓存是否包含用户信息
-        ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-        
+        /*
+        //ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+
         if (localSettings.Values.ContainsKey("UserToken"))
         {
             // 从本地缓存获取用户信息
@@ -126,8 +128,8 @@ public partial class App : Application
             UserInfo.QQ = qq;
             UserInfo.Email = email;
             UserInfo.UserId = userid;
-        }
-
+        }*/
+        UserInfo.TryLoadSettings();
         // 继续应用程序启动逻辑
         await App.GetService<IActivationService>().ActivateAsync(args);
     }
