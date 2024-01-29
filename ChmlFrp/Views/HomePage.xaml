@@ -1,0 +1,266 @@
+﻿<Page
+    x:Class="ChmlFrp.Views.HomePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
+    xmlns:ui="using:CommunityToolkit.WinUI"
+    mc:Ignorable="d">
+
+    <Grid>
+        <ScrollViewer>
+            <StackPanel
+           x:Name="ContentArea">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <PersonPicture
+                        Name="userImgPicture"
+                        DisplayName="chaoji233"
+                        ProfilePicture="/Assets/Null.png"
+                        Initials="CF"
+                        Width="64" Height="64" Margin="6"/>
+                        <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Left">
+                            <TextBlock
+                            x:Name="timeHelloTextBlock"
+                            Text="您好！"
+                            Style="{ThemeResource SubtitleTextBlockStyle}"
+                            Margin="12,6,0,0"/>
+                            <TextBlock
+                            x:Name="usernameTextBlock"
+                            Text="您尚未登录"
+                            Style="{ThemeResource SubtitleTextBlockStyle}"
+                            Margin="12,0,0,0"/>
+                        </StackPanel>
+                    </Grid>
+                    <Grid Grid.Column="1">
+                        <Button Click="YanchiButton_Click" AutomationProperties.Name="Pie" Background="Transparent" BorderBrush="Transparent">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid Grid.Column="0">
+                                    <FontIcon Glyph="&#xE839;"/>
+                                </Grid>
+                                <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Left">
+                                    <TextBlock
+                                    x:Name="lianjieTextBlock"
+Text="连接正常"
+Style="{ThemeResource BodyTextBlockStyle}"
+Margin="12,0,0,0"/>
+                                    <TextBlock
+                                    x:Name="yanchiTextBlock"
+Text="64ms"
+Style="{ThemeResource BodyTextBlockStyle}"
+Margin="12,0,0,0"/>
+                                </StackPanel>
+                            </Grid>
+                        </Button>
+                    </Grid>
+                    <Grid Grid.Column="2">
+                        <Button AutomationProperties.Name="Pie" Background="Transparent" BorderBrush="Transparent">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid Grid.Column="0">
+                                    <FontIcon Glyph="&#xEE94;" />
+                                </Grid>
+                                <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Left">
+                                    <TextBlock
+Text="签到"
+Style="{ThemeResource BodyTextBlockStyle}"
+Margin="12,0,0,0"/>
+                                    <TextBlock
+                                    x:Name="integralTextBlock"
+Text="您尚未登录"
+Style="{ThemeResource BodyTextBlockStyle}"
+Margin="12,0,0,0"/>
+                                </StackPanel>
+                            </Grid>
+                        </Button>
+                    </Grid>
+                </Grid>
+                <controls:SettingsCard ActionIcon="{ui:FontIcon Glyph=&#xE8A7;}"
+                               ActionIconToolTip="Open in new window"
+                               Description="目前启动器尚不完善，如果您有一些改进意见。可点击此链接填写问卷。"
+                               Header="改进意见/调查问卷"
+                               HeaderIcon="{ui:FontIcon Glyph=&#xE774;}"
+                               IsClickEnabled="True"
+                               Margin="0,32,0,0"
+                                       Click="GoWenJuan"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid
+                    Grid.Column="0"
+                    Margin="0,24,24,0"
+                    Background="{ThemeResource CardBackgroundFillColorDefault}"
+                    CornerRadius="4">
+                        <StackPanel>
+                            <Expander Header="主页右上角的网络连接指的什么" Margin="12,12,12,0" HorizontalAlignment="Stretch">
+                                <ScrollViewer MaxHeight="200">
+                                    <Grid>
+                                        <TextBlock TextWrapping="Wrap">
+                主页右上角的连接为Ping ChmlFrp API服务器的延迟，此连接决定是否能正常登录，获取数据等，点击可以重新获取延迟。注意：此延迟与最终映射延迟无关！
+                                        </TextBlock>
+                                    </Grid>
+                                </ScrollViewer>
+                            </Expander>
+                            <Expander Header="为什么我登录成功后主页依旧显示尚未登录" Margin="12,12,12,0" HorizontalAlignment="Stretch">
+                                <ScrollViewer MaxHeight="200">
+                                    <Grid>
+                                        <TextBlock TextWrapping="Wrap">
+                                            这个BUG目前暂未修复，通过菜单切换到其他页面再切换回来即可看见正常的登录信息。
+                                        </TextBlock>
+                                    </Grid>
+                                </ScrollViewer>
+                            </Expander>
+                            <Expander Header="为什么我点击某个按钮（例如主页右上角的签到）没有反应" Margin="12,12,12,0" HorizontalAlignment="Stretch">
+                                <ScrollViewer MaxHeight="200">
+                                    <Grid>
+                                        <TextBlock TextWrapping="Wrap">
+                由于ChmlFrp API尚未更新，所以部分功能（如：签到）功能暂时无法使用。值得注意的是，这些功能在面板中是可以使用的。所以签到等操作请前往控制面板
+                                        </TextBlock>
+                                    </Grid>
+                                </ScrollViewer>
+                            </Expander>
+                            <Expander Header="我在另一台电脑上无法启动、使用ChmlFrp图形客户端" Margin="12,12,12,0" HorizontalAlignment="Stretch">
+                                <ScrollViewer MaxHeight="200">
+                                    <Grid>
+                                        <TextBlock TextWrapping="Wrap">
+                此ChmlFrp图形客户端是由WinUI3开发的，WinUI3并不支持Windows 10,version 1803(10.0: 版本 17134)之前的版本。如果您的系统版本正确，但还是无法启动，可以去QQ交流群提出BUG。
+                                        </TextBlock>
+                                    </Grid>
+                                </ScrollViewer>
+                            </Expander>
+                            <Expander Header="右侧的'限带宽'中为什么有两个数据" Margin="12,12,12,0" HorizontalAlignment="Stretch">
+                                <ScrollViewer MaxHeight="200">
+                                    <Grid>
+                                        <TextBlock TextWrapping="Wrap">
+                                            我们的节点国内和国外的带宽是分开计算的，左侧的数据为国内的限速，右侧为国外的限速。国外限速为国内限速的4倍，国内限速以套餐速度为准。
+                                        </TextBlock>
+                                    </Grid>
+                                </ScrollViewer>
+                            </Expander>
+                        </StackPanel>
+                    </Grid>
+                    <Grid 
+                    Grid.Column="1"
+                    Margin="0,24,0,0"
+                  Background="{ThemeResource CardBackgroundFillColorDefault}"
+                  CornerRadius="4">
+                        <StackPanel Margin="24,20,24,24">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <FontIcon Glyph="&#xE94D;" Grid.Column="0"/>
+                                <TextBlock Grid.Column="1" x:Name="userid" Text="用户ID：您尚未登录" Style="{ThemeResource BodyTextBlockStyle}" Margin="12,0,0,0"/>
+                            </Grid>
+                            <Grid Margin="0,24,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <FontIcon Glyph="&#xE716;" Grid.Column="0"/>
+                                <TextBlock Grid.Column="1" x:Name="username" Text="用户名：您尚未登录" Style="{ThemeResource BodyTextBlockStyle}" Margin="12,0,0,0"/>
+                            </Grid>
+                            <Grid Margin="0,24,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <FontIcon Glyph="&#xE715;" Grid.Column="0"/>
+                                <TextBlock Grid.Column="1" x:Name="email" Text="邮箱号：您尚未登录" Style="{ThemeResource BodyTextBlockStyle}" Margin="12,0,0,0"/>
+                            </Grid>
+                            <Grid Margin="0,24,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <FontIcon Glyph="&#xEE57;" Grid.Column="0"/>
+                                <TextBlock Grid.Column="1" x:Name="usergroup" Text="权限组：您尚未登录" Style="{ThemeResource BodyTextBlockStyle}" Margin="12,0,0,0"/>
+                            </Grid>
+                            <Grid Margin="0,24,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <FontIcon Glyph="&#xEA42;" Grid.Column="0"/>
+                                <TextBlock Grid.Column="1" x:Name="tunnel" Text="隧道数：您尚未登录" Style="{ThemeResource BodyTextBlockStyle}" Margin="12,0,0,0"/>
+                            </Grid>
+                            <Grid Margin="0,24,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <FontIcon Glyph="&#xEC4A;" Grid.Column="0"/>
+                                <TextBlock Grid.Column="1" x:Name="bandwidth" Text="限带宽：您尚未登录" Style="{ThemeResource BodyTextBlockStyle}" Margin="12,0,0,0"/>
+                            </Grid>
+                            <Grid Margin="0,24,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <FontIcon Glyph="&#xE8C7;" Grid.Column="0"/>
+                                <TextBlock Grid.Column="1" x:Name="realname" Text="实名状态：您尚未登录" Style="{ThemeResource BodyTextBlockStyle}" Margin="12,0,0,0"/>
+                            </Grid>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+                <Grid Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" Margin="0,24,0,0" CornerRadius="4">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="0">
+                            <Button AutomationProperties.Name="Pie" Click="ToGoQQOne" Background="Transparent" BorderBrush="Transparent" Margin="12,12,12,12">
+                                <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
+                                    <TextBlock
+Text="TechCat交流群-1群"
+Style="{ThemeResource BodyTextBlockStyle}"
+Margin="0,0,0,0"/>
+                                    <TextBlock
+Text="992067118"
+Style="{ThemeResource BodyTextBlockStyle}"
+Margin="0,3,0,0"/>
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+                        <Grid Grid.Column="1">
+                            <Button AutomationProperties.Name="Pie" Click="ToGoQQTwo" Background="Transparent" BorderBrush="Transparent" Margin="0,12,12,12">
+                                <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Left">
+                                    <TextBlock
+Text="TechCat交流群-2群"
+Style="{ThemeResource BodyTextBlockStyle}"
+Margin="0,0,0,0"/>
+                                    <TextBlock
+Text="592908249"
+Style="{ThemeResource BodyTextBlockStyle}"
+Margin="0,3,0,0"/>
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

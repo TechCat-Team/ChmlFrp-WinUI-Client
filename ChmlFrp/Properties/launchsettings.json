@@ -1,0 +1,10 @@
+﻿{
+    "profiles": {
+      "ChmlFrp (Package)": {
+        "commandName": "MsixPackage"
+      },
+      "ChmlFrp (Unpackaged)": {
+        "commandName": "Project"
+      }
+    }
+}

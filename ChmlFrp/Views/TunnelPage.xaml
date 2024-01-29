@@ -1,0 +1,71 @@
+﻿<Page
+    x:Class="ChmlFrp.Views.TunnelPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:animations="using:CommunityToolkit.WinUI.UI.Animations"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:models="using:ChmlFrp.Core.Models"
+    mc:Ignorable="d">
+
+    <Grid x:Name="ContentArea">
+        <controls:AdaptiveGridView
+            animations:Connected.ListItemElementName="itemThumbnail"
+            animations:Connected.ListItemKey="animationKeyContentGrid"
+            DesiredWidth="360"
+            ItemHeight="185"
+            IsItemClickEnabled="True"
+            ItemsSource="{x:Bind ViewModel.Source,Mode=OneWay}"
+            SelectionMode="None"
+            StretchContentForSingleRow="False">
+            <controls:AdaptiveGridView.ItemTemplate>
+                <DataTemplate x:DataType="models:TunnelInfo">
+                    <Grid Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" Padding="{StaticResource XSmallLeftTopRightBottomMargin}">
+                        <StackPanel>
+                            <ProgressBar x:Name="progressBar" IsIndeterminate="False" Margin="-10,-10,-10,0" ShowPaused="False" ShowError="False" />
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <ToggleSwitch Grid.Column="0" x:Name="toggleSwitch" Toggled="ToggleSwitch_Toggled" Tag="{Binding ElementName=progressBar}" />
+                                <TextBlock Grid.Column="1" Margin="0,7,0,0" Style="{ThemeResource BodyTextStyle}" Text="{x:Bind TunnelName}" />
+                            </Grid>
+                            <Grid Margin="0,6,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Style="{ThemeResource BodyTextBlockStyle}" Opacity="0.8" Text="内网地址：" />
+                                <TextBlock Grid.Column="1" Style="{ThemeResource BodyTextBlockStyle}" Opacity="0.6" Text="{x:Bind IntranetInfo}" />
+                            </Grid>
+                            <Grid Margin="0,6,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Style="{ThemeResource BodyTextBlockStyle}" Opacity="0.8" Text="节点信息：" />
+                                <TextBlock Grid.Column="1" Style="{ThemeResource BodyTextBlockStyle}" Opacity="0.6" Text="{x:Bind NodeInfo}" />
+                            </Grid>
+                            <Grid Margin="0,6,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Style="{ThemeResource BodyTextBlockStyle}" Opacity="0.8" Text="链接地址：" />
+                                <TextBlock Grid.Column="1" Style="{ThemeResource BodyTextBlockStyle}" Opacity="0.6" Text="{x:Bind LinkAddress}" />
+                            </Grid>
+                            <CommandBar Margin="0,6,0,0" Background="Transparent" IsOpen="False" DefaultLabelPosition="Right">
+                                 <!--<AppBarButton Icon="Delete" Label="删除"/>
+                                 <AppBarButton Icon="Edit" Label="修改"/>-->
+                                <AppBarButton Icon="Share" Label="分享"/>
+                            </CommandBar>
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </controls:AdaptiveGridView.ItemTemplate>
+        </controls:AdaptiveGridView>
+    </Grid>
+</Page>
