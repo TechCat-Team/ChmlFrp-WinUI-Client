@@ -1,13 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "WsFVkM32gA2dfNneNWWxyKNTohOO1NRG69uvos+ZnZUBRvcCMSm5BuKy1dHbw20ILdRjlQpCgKCuEnOdayQ5Lg==",
+  "dgSpecHash": "JzPMB6H309TuJkyHdv3SnFESR855hSw5j0R/k4nQ0a9RYWQ2C8ip0qOgzizYaLOHMvjnaTP6VeMUuvMKKZ9xnw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\13350\\Source\\New\\ChmlFrp.Core\\ChmlFrp.Core.csproj",
+  "projectFilePath": "E:\\Dev\\ChmlFrp-WinUI-Client\\ChmlFrp.Core\\ChmlFrp.Core.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\13350\\.nuget\\packages\\newtonsoft.json\\13.0.2\\newtonsoft.json.13.0.2.nupkg.sha512",
-    "C:\\Users\\13350\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\7.0.14\\microsoft.windowsdesktop.app.ref.7.0.14.nupkg.sha512",
-    "C:\\Users\\13350\\.nuget\\packages\\microsoft.netcore.app.ref\\7.0.14\\microsoft.netcore.app.ref.7.0.14.nupkg.sha512",
-    "C:\\Users\\13350\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\7.0.14\\microsoft.aspnetcore.app.ref.7.0.14.nupkg.sha512"
+    "C:\\Users\\Alvin\\.nuget\\packages\\newtonsoft.json\\13.0.2\\newtonsoft.json.13.0.2.nupkg.sha512"
   ],
   "logs": []
 }

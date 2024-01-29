@@ -94,7 +94,7 @@ public partial class App : Application
 
         // 查询本地缓存是否包含用户信息
         ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-
+        
         if (localSettings.Values.ContainsKey("UserToken"))
         {
             // 从本地缓存获取用户信息

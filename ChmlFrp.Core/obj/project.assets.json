@@ -55,23 +55,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\13350\\.nuget\\packages\\": {},
-    "D:\\Visual Studio\\SDK\\NuGetPackages": {}
+    "C:\\Users\\Alvin\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\13350\\Source\\New\\ChmlFrp.Core\\ChmlFrp.Core.csproj",
+      "projectUniqueName": "E:\\Dev\\ChmlFrp-WinUI-Client\\ChmlFrp.Core\\ChmlFrp.Core.csproj",
       "projectName": "ChmlFrp.Core",
-      "projectPath": "C:\\Users\\13350\\Source\\New\\ChmlFrp.Core\\ChmlFrp.Core.csproj",
-      "packagesPath": "C:\\Users\\13350\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\13350\\Source\\New\\ChmlFrp.Core\\obj\\",
+      "projectPath": "E:\\Dev\\ChmlFrp-WinUI-Client\\ChmlFrp.Core\\ChmlFrp.Core.csproj",
+      "packagesPath": "C:\\Users\\Alvin\\.nuget\\packages\\",
+      "outputPath": "E:\\Dev\\ChmlFrp-WinUI-Client\\ChmlFrp.Core\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "D:\\Visual Studio\\SDK\\NuGetPackages"
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\13350\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Alvin\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -80,8 +80,9 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
-        "https://api.nuget.org/v3/index.json": {}
+        "https://api.nuget.org/v3/index.json": {},
+        "https://nuget.lessokaji.com/v3/index.json": {},
+        "https://pkgs.dev.azure.com/dotnet/CommunityToolkit/_packaging/CommunityToolkit-Labs/nuget/v3/index.json": {}
       },
       "frameworks": {
         "net7.0": {
@@ -93,11 +94,6 @@
         "warnAsError": [
           "NU1605"
         ]
-      },
-      "restoreAuditProperties": {
-        "enableAudit": "true",
-        "auditLevel": "low",
-        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -120,20 +116,6 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
-        "downloadDependencies": [
-          {
-            "name": "Microsoft.AspNetCore.App.Ref",
-            "version": "[7.0.14, 7.0.14]"
-          },
-          {
-            "name": "Microsoft.NETCore.App.Ref",
-            "version": "[7.0.14, 7.0.14]"
-          },
-          {
-            "name": "Microsoft.WindowsDesktop.App.Ref",
-            "version": "[7.0.14, 7.0.14]"
-          }
-        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"

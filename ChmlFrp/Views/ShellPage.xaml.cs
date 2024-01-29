@@ -124,171 +124,178 @@ public sealed partial class ShellPage : Page
             // 处理 ContentDialog 返回的结果
             if (result == ContentDialogResult.Primary)
             {
-                // 用户点击了"确定"按钮
-                myProgressBar.Visibility = Visibility.Visible;
-                var username = UsernameTextBox.Text;
-                var password = PasswordBox.Password;
-                // 检测用户名和密码是否为空
-                if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
-                {
-                    myInfoBar.IsOpen = true;
-                    myInfoBar.Message = "用户名或密码不能为空";
-                    myProgressBar.ShowPaused = true;
-                }
-                // 如果不为空 继续执行指令
-                else
-                {
-                    using HttpClient httpClient = new HttpClient();
-                    // 构建请求的URL
-                    var apiUrl = $"https://panel.chmlfrp.cn/api/login.php?username={username}&password={password}";
-
-                    try
-                    {
-                        // 发送GET请求
-                        HttpResponseMessage response = await httpClient.GetAsync(apiUrl);
-
-                        // 检查响应是否成功
-                        if (response.IsSuccessStatusCode)
-                        {
-                            // 读取响应内容
-                            var responseContent = await response.Content.ReadAsStringAsync();
-
-                            // 解析JSON响应
-                            // 使用 Newtonsoft.Json 库
-                            dynamic apiResult = Newtonsoft.Json.JsonConvert.DeserializeObject(responseContent);
-
-                            // 检查返回的 code
-                            if (apiResult.code != null)
-                            {
-                                // 获取用户数据
-                                // 用户名
-                                string returnedUsername = apiResult.username;
-                                // 用户头像
-                                string userImg = apiResult.userimg;
-                                // 用户token
-                                string userToken = apiResult.token;
-                                // 实名状态
-                                string realname = apiResult.realname;
-                                // 限速
-                                string bandwidth = apiResult.bandwidth;
-                                // 限制隧道
-                                string tunnel = apiResult.tunnel;
-                                // 当前隧道使用数
-                                string tunnelstate = apiResult.tunnelstate;
-                                // 当前积分
-                                string integral = apiResult.integral;
-                                // 权限组到期时间
-                                string term = apiResult.term;
-                                // 权限组
-                                string usergroup = apiResult.usergroup;
-                                // qq
-                                string qq = apiResult.qq;
-                                // 邮箱
-                                string email = apiResult.email;
-                                // 用户id
-                                string userid = apiResult.userid;
-
-
-                                // 如果userimg不为空,则缓存头像图片。
-                                if (!string.IsNullOrEmpty(userImg))
-                                {
-                                    // 下载并缓存用户图标
-                                    var localImagePath = await CacheUserImage(userImg, returnedUsername);
-                                    UserInfo.UserImage = localImagePath;
-                                    // 构建通知
-                                    var builder = new AppNotificationBuilder()
-                                    .AddText($"欢迎{returnedUsername}！")
-                                    .AddText("ChmlFrp登录成功！")
-                                    .SetAppLogoOverride(new Uri($"{localImagePath}"), AppNotificationImageCrop.Circle);
-
-                                    var notificationManager = AppNotificationManager.Default;
-                                    notificationManager.Show(builder.BuildNotification());
-                                }
-                                else
-                                {
-                                    // 构建通知
-                                    var builder = new AppNotificationBuilder()
-                                    .AddText($"欢迎{returnedUsername}！")
-                                    .AddText("ChmlFrp登录成功！");
-
-                                    var notificationManager = AppNotificationManager.Default;
-                                    notificationManager.Show(builder.BuildNotification());
-                                }
-                                // 如果用户勾选了自动登录。
-                                if (AutoLoginCheckBox.IsChecked == true)
-                                {
-                                    // 使用本地缓存保存用户信息
-                                    ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-
-                                    localSettings.Values["Username"] = returnedUsername;
-                                    localSettings.Values["UserImg"] = UserInfo.UserImage;
-                                    localSettings.Values["UserToken"] = userToken;
-                                    localSettings.Values["Realname"] = realname;
-                                    localSettings.Values["Bandwidth"] = bandwidth;
-                                    localSettings.Values["Tunnel"] = tunnel;
-                                    localSettings.Values["TunnelState"] = tunnelstate;
-                                    localSettings.Values["Integral"] = integral;
-                                    localSettings.Values["Term"] = term;
-                                    localSettings.Values["UserGroup"] = usergroup;
-                                    localSettings.Values["QQ"] = qq;
-                                    localSettings.Values["Email"] = email;
-                                    localSettings.Values["UserID"] = userid;
-                                }
-
-                                // 保存用户信息到 App 属性中
-                                UserInfo.UserName = returnedUsername;
-                                UserInfo.UserToken = userToken;
-                                UserInfo.RealName = realname;
-                                UserInfo.Bandwidth = bandwidth;
-                                UserInfo.Tunnel = tunnel;
-                                UserInfo.TunnelState = tunnelstate;
-                                UserInfo.Integral = integral;
-                                UserInfo.Term = term;
-                                UserInfo.UserGroup = usergroup;
-                                UserInfo.QQ = qq;
-                                UserInfo.Email = email;
-                                UserInfo.UserId = userid;
-
-                                // 允许点击 Shell_Tunnel
-                                Shell_Tunnel.IsEnabled = true;
-                                // 设置 TextBlock 的文本为 App.LoggedInUsername 的内容
-                                usernameTextBlock.Text = UserInfo.UserName;
-                                emailTextBlock.Text = UserInfo.Email;
-                                userImgPicture.DisplayName = UserInfo.UserName;
-
-                                var imagePath = UserInfo.UserImage;
-
-                                // 创建一个 BitmapImage 对象
-                                BitmapImage bitmapImage = new BitmapImage(new Uri(imagePath));
-
-                                // 将 BitmapImage 设置为 ImageSource
-                                userImgPicture.ProfilePicture = bitmapImage;
-                                userImgPictureA.ProfilePicture = bitmapImage;
-                            }
-                            else
-                            {
-                                // 获取错误信息
-                                string error = apiResult.error;
-                                myInfoBar.IsOpen = true;
-                                myInfoBar.Message = error;
-                                myProgressBar.ShowPaused = true;
-                            }
-                        }
-                        else
-                        {
-                            myInfoBar.IsOpen = true;
-                            myInfoBar.Message = "https请求失败，请检查网络连接";
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        // 处理异常
-                        Console.WriteLine($"An error occurred: {ex.Message}");
-                    }
-                }
             }
         }
     }
+
+    private async void loginContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+    {
+        args.Cancel = true;
+        // 用户点击了"确定"按钮
+        myProgressBar.Visibility = Visibility.Visible;
+        var username = UsernameTextBox.Text;
+        var password = PasswordBox.Password;
+        // 检测用户名和密码是否为空
+        if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+        {
+            myInfoBar.IsOpen = true;
+            myInfoBar.Message = "用户名或密码不能为空";
+            myProgressBar.ShowPaused = true;
+        }
+        // 如果不为空 继续执行指令
+        else
+        {
+            using HttpClient httpClient = new HttpClient();
+            // 构建请求的URL
+            var apiUrl = $"https://panel.chmlfrp.cn/api/login.php?username={username}&password={password}";
+
+            try
+            {
+                // 发送GET请求
+                HttpResponseMessage response = await httpClient.GetAsync(apiUrl);
+
+                // 检查响应是否成功
+                if (response.IsSuccessStatusCode)
+                {
+                    // 读取响应内容
+                    var responseContent = await response.Content.ReadAsStringAsync();
+
+                    // 解析JSON响应
+                    // 使用 Newtonsoft.Json 库
+                    dynamic apiResult = Newtonsoft.Json.JsonConvert.DeserializeObject(responseContent);
+
+                    // 检查返回的 code
+                    if (apiResult.code != null)
+                    {
+                        // 获取用户数据
+                        // 用户名
+                        string returnedUsername = apiResult.username;
+                        // 用户头像
+                        string userImg = apiResult.userimg;
+                        // 用户token
+                        string userToken = apiResult.token;
+                        // 实名状态
+                        string realname = apiResult.realname;
+                        // 限速
+                        string bandwidth = apiResult.bandwidth;
+                        // 限制隧道
+                        string tunnel = apiResult.tunnel;
+                        // 当前隧道使用数
+                        string tunnelstate = apiResult.tunnelstate;
+                        // 当前积分
+                        string integral = apiResult.integral;
+                        // 权限组到期时间
+                        string term = apiResult.term;
+                        // 权限组
+                        string usergroup = apiResult.usergroup;
+                        // qq
+                        string qq = apiResult.qq;
+                        // 邮箱
+                        string email = apiResult.email;
+                        // 用户id
+                        string userid = apiResult.userid;
+
+
+                        // 如果userimg不为空,则缓存头像图片。
+                        if (!string.IsNullOrEmpty(userImg))
+                        {
+                            // 下载并缓存用户图标
+                            var localImagePath = await CacheUserImage(userImg, returnedUsername);
+                            UserInfo.UserImage = localImagePath;
+                            // 构建通知
+                            var builder = new AppNotificationBuilder()
+                            .AddText($"欢迎{returnedUsername}！")
+                            .AddText("ChmlFrp登录成功！")
+                            .SetAppLogoOverride(new Uri($"{localImagePath}"), AppNotificationImageCrop.Circle);
+
+                            var notificationManager = AppNotificationManager.Default;
+                            notificationManager.Show(builder.BuildNotification());
+                        }
+                        else
+                        {
+                            // 构建通知
+                            var builder = new AppNotificationBuilder()
+                            .AddText($"欢迎{returnedUsername}！")
+                            .AddText("ChmlFrp登录成功！");
+
+                            var notificationManager = AppNotificationManager.Default;
+                            notificationManager.Show(builder.BuildNotification());
+                        }
+                        // 如果用户勾选了自动登录。
+                        if (AutoLoginCheckBox.IsChecked == true)
+                        {
+                            // 使用本地缓存保存用户信息
+                            ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+
+                            localSettings.Values["Username"] = returnedUsername;
+                            localSettings.Values["UserImg"] = UserInfo.UserImage;
+                            localSettings.Values["UserToken"] = userToken;
+                            localSettings.Values["Realname"] = realname;
+                            localSettings.Values["Bandwidth"] = bandwidth;
+                            localSettings.Values["Tunnel"] = tunnel;
+                            localSettings.Values["TunnelState"] = tunnelstate;
+                            localSettings.Values["Integral"] = integral;
+                            localSettings.Values["Term"] = term;
+                            localSettings.Values["UserGroup"] = usergroup;
+                            localSettings.Values["QQ"] = qq;
+                            localSettings.Values["Email"] = email;
+                            localSettings.Values["UserID"] = userid;
+                        }
+
+                        // 保存用户信息到 App 属性中
+                        UserInfo.UserName = returnedUsername;
+                        UserInfo.UserToken = userToken;
+                        UserInfo.RealName = realname;
+                        UserInfo.Bandwidth = bandwidth;
+                        UserInfo.Tunnel = tunnel;
+                        UserInfo.TunnelState = tunnelstate;
+                        UserInfo.Integral = integral;
+                        UserInfo.Term = term;
+                        UserInfo.UserGroup = usergroup;
+                        UserInfo.QQ = qq;
+                        UserInfo.Email = email;
+                        UserInfo.UserId = userid;
+
+                        // 允许点击 Shell_Tunnel
+                        Shell_Tunnel.IsEnabled = true;
+                        // 设置 TextBlock 的文本为 App.LoggedInUsername 的内容
+                        usernameTextBlock.Text = UserInfo.UserName;
+                        emailTextBlock.Text = UserInfo.Email;
+                        userImgPicture.DisplayName = UserInfo.UserName;
+
+                        var imagePath = UserInfo.UserImage;
+
+                        // 创建一个 BitmapImage 对象
+                        BitmapImage bitmapImage = new BitmapImage(new Uri(imagePath));
+
+                        // 将 BitmapImage 设置为 ImageSource
+                        userImgPicture.ProfilePicture = bitmapImage;
+                        userImgPictureA.ProfilePicture = bitmapImage;
+                        sender.Hide();
+                    }
+                    else
+                    {
+                        // 获取错误信息
+                        string error = apiResult.error;
+                        myInfoBar.IsOpen = true;
+                        myInfoBar.Message = error;
+                        myProgressBar.ShowPaused = true;
+                    }
+                }
+                else
+                {
+                    myInfoBar.IsOpen = true;
+                    myInfoBar.Message = "https请求失败，请检查网络连接";
+                }
+            }
+            catch (Exception ex)
+            {
+                // 处理异常
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
+        }
+    }
+
 
     private async void LoadTextFromApi()
     {
@@ -522,5 +529,4 @@ public sealed partial class ShellPage : Page
         ButtonOnPaneOpened.Visibility = Visibility.Visible;
         ButtonOnPaneClosing.Visibility = Visibility.Collapsed;
     }
-
 }

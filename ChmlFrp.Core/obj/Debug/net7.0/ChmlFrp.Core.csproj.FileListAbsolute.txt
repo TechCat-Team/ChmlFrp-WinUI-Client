@@ -10,3 +10,16 @@ C:\Users\13350\Source\New\ChmlFrp.Core\obj\Debug\net7.0\ChmlFrp.Core.dll
 C:\Users\13350\Source\New\ChmlFrp.Core\obj\Debug\net7.0\refint\ChmlFrp.Core.dll
 C:\Users\13350\Source\New\ChmlFrp.Core\obj\Debug\net7.0\ChmlFrp.Core.pdb
 C:\Users\13350\Source\New\ChmlFrp.Core\obj\Debug\net7.0\ref\ChmlFrp.Core.dll
+E:\Dev\ChmlFrp-WinUI-Client\ChmlFrp.Core\bin\Debug\net7.0\ChmlFrp.Core.deps.json
+E:\Dev\ChmlFrp-WinUI-Client\ChmlFrp.Core\bin\Debug\net7.0\ChmlFrp.Core.dll
+E:\Dev\ChmlFrp-WinUI-Client\ChmlFrp.Core\bin\Debug\net7.0\ChmlFrp.Core.pdb
+E:\Dev\ChmlFrp-WinUI-Client\ChmlFrp.Core\obj\Debug\net7.0\ChmlFrp.Core.csproj.AssemblyReference.cache
+E:\Dev\ChmlFrp-WinUI-Client\ChmlFrp.Core\obj\Debug\net7.0\ChmlFrp.Core.GeneratedMSBuildEditorConfig.editorconfig
+E:\Dev\ChmlFrp-WinUI-Client\ChmlFrp.Core\obj\Debug\net7.0\ChmlFrp.Core.AssemblyInfoInputs.cache
+E:\Dev\ChmlFrp-WinUI-Client\ChmlFrp.Core\obj\Debug\net7.0\ChmlFrp.Core.AssemblyInfo.cs
+E:\Dev\ChmlFrp-WinUI-Client\ChmlFrp.Core\obj\Debug\net7.0\ChmlFrp.Core.csproj.CoreCompileInputs.cache
+E:\Dev\ChmlFrp-WinUI-Client\ChmlFrp.Core\obj\Debug\net7.0\ChmlFrp.Core.sourcelink.json
+E:\Dev\ChmlFrp-WinUI-Client\ChmlFrp.Core\obj\Debug\net7.0\ChmlFrp.Core.dll
+E:\Dev\ChmlFrp-WinUI-Client\ChmlFrp.Core\obj\Debug\net7.0\refint\ChmlFrp.Core.dll
+E:\Dev\ChmlFrp-WinUI-Client\ChmlFrp.Core\obj\Debug\net7.0\ChmlFrp.Core.pdb
+E:\Dev\ChmlFrp-WinUI-Client\ChmlFrp.Core\obj\Debug\net7.0\ref\ChmlFrp.Core.dll
