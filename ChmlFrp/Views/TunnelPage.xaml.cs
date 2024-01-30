@@ -24,6 +24,8 @@ public sealed partial class TunnelPage : Page
         InitializeComponent();
     }
 
+    public static Dictionary<int, bool> tunnelStatus = new();
+
     private async void ToggleSwitch_Toggled(object sender, RoutedEventArgs e)
     {
         // 获取ToggleSwitch实例
@@ -52,7 +54,7 @@ public sealed partial class TunnelPage : Page
                 if (progressBar != null)
                 {
                     // 根据ToggleSwitch的状态设置ProgressBar的IsIndeterminate属性
-                    progressBar.IsIndeterminate = toggleSwitch.IsOn;
+                    tunnelStatus[tunnelInfo.TunnelId] = progressBar.IsIndeterminate = toggleSwitch.IsOn;
 
                     var folderName = "frpc";
                     var executableName = "frpc.exe";
@@ -151,5 +153,24 @@ public sealed partial class TunnelPage : Page
         }
 
         return false;
+    }
+
+    private void toggleSwitch_Loaded(object sender, RoutedEventArgs e)
+    {
+        var toggleSwitch = ((ToggleSwitch)sender);
+        if (toggleSwitch != null)
+        {
+            // 获取与ToggleSwitch关联的TunnelInfo对象
+            TunnelInfo? tunnelInfo = (TunnelInfo)toggleSwitch.DataContext;
+
+            if (tunnelInfo != null)
+            {
+                tunnelStatus.TryAdd(tunnelInfo.TunnelId, false);
+                toggleSwitch.IsOn = tunnelStatus[tunnelInfo.TunnelId];
+            }
+
+            toggleSwitch.Toggled += ToggleSwitch_Toggled;
+        }
+
     }
 }
