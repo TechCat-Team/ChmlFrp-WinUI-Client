@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.IO;
 using Microsoft.Windows.AppNotifications.Builder;
 using Microsoft.Windows.AppNotifications;
+using Windows.Storage.Streams;
 
 namespace ChmlFrp.Views;
 
@@ -24,7 +25,27 @@ public sealed partial class TunnelPage : Page
         InitializeComponent();
     }
 
-    public static Dictionary<int, bool> tunnelStatus = new();
+    public class TunnelStatus
+    {
+        public string Name
+        {
+            get; set;
+        } = "";
+        public bool IsActive
+        {
+            get; set;
+        }
+        public Process? Process
+        {
+            get; set; 
+        }
+        public string Output
+        {
+            get; set;
+        } = "";
+    }
+
+    public static Dictionary<int, TunnelStatus> tunnelStatus = new();
 
     private async void ToggleSwitch_Toggled(object sender, RoutedEventArgs e)
     {
@@ -54,7 +75,7 @@ public sealed partial class TunnelPage : Page
                 if (progressBar != null)
                 {
                     // 根据ToggleSwitch的状态设置ProgressBar的IsIndeterminate属性
-                    tunnelStatus[tunnelInfo.TunnelId] = progressBar.IsIndeterminate = toggleSwitch.IsOn;
+                    tunnelStatus[tunnelInfo.TunnelId].IsActive = progressBar.IsIndeterminate = toggleSwitch.IsOn;
 
                     var folderName = "frpc";
                     var executableName = "frpc.exe";
@@ -68,38 +89,41 @@ public sealed partial class TunnelPage : Page
                     if (File.Exists(executablePath))
                     {
                         // 组装简易启动指令
-                        var Command = $"frpc.exe -u {UserInfo.Get.UserToken} -p {tunnelId}";
+                        var Command = $"-u {UserInfo.Get.UserToken} -p {tunnelId}";
 
                         // 创建 ProcessStartInfo 对象来配置进程启动信息
                         ProcessStartInfo psi = new ProcessStartInfo
                         {
-                            FileName = "cmd.exe",
+                            FileName = executableName,
                             RedirectStandardInput = true,
                             RedirectStandardOutput = true,
                             RedirectStandardError = true,
                             UseShellExecute = false,
                             CreateNoWindow = true,
-                            WorkingDirectory = folderPath
+                            WorkingDirectory = folderPath,
+                            Arguments = Command
                         };
 
                         // 启动进程
                         using (Process process = new Process { StartInfo = psi })
                         {
+                            tunnelStatus[tunnelInfo.TunnelId].Process = process;
                             process.Start();
 
                             // 将cmd命令写入标准输入流
-                            process.StandardInput.WriteLine(Command);
-                            process.StandardInput.Flush();
-                            process.StandardInput.Close();
+                            //process.StandardInput.WriteLine(Command);
+                            //process.StandardInput.Flush();
+                            //process.StandardInput.Close();                                
 
                             // 异步读取输出流
                             Task<string> outputTask = process.StandardOutput.ReadToEndAsync();
 
                             // 等待10秒或直到输出中包含"映射启动成功"
-                            var success = await WaitForSuccess(outputTask, TimeSpan.FromSeconds(10));
+                            var success = await WaitForSuccess(outputTask, TimeSpan.FromSeconds(10), tunnelId);
 
                             if (success)
                             {
+                                tunnelStatus[tunnelInfo.TunnelId].Output = outputTask.Result;
                                 progressBar.ShowError = false;
                                 progressBar.ShowPaused = false;
                                 progressBar.IsIndeterminate = false;
@@ -133,14 +157,14 @@ public sealed partial class TunnelPage : Page
             }
         }
     }
-    static async Task<bool> WaitForSuccess(Task<string> outputTask, TimeSpan timeout)
+    static async Task<bool> WaitForSuccess(Task<string> outputTask, TimeSpan timeout, int tunnelId)
     {
         DateTime startTime = DateTime.Now;
 
         while ((DateTime.Now - startTime) < timeout)
         {
             await Task.Delay(100);
-
+            tunnelStatus[tunnelId].Output = outputTask.Result;
             // 在异步任务未完成时检查输出
             if (outputTask.IsCompleted)
             {
@@ -165,8 +189,14 @@ public sealed partial class TunnelPage : Page
 
             if (tunnelInfo != null)
             {
-                tunnelStatus.TryAdd(tunnelInfo.TunnelId, false);
-                toggleSwitch.IsOn = tunnelStatus[tunnelInfo.TunnelId];
+                tunnelStatus.TryAdd(tunnelInfo.TunnelId, new TunnelStatus() { IsActive = false, Name = tunnelInfo.TunnelName});
+                toggleSwitch.IsOn = tunnelStatus[tunnelInfo.TunnelId].IsActive;
+                ProgressBar? progressBar = toggleSwitch.Tag as ProgressBar;
+
+                if (progressBar != null && toggleSwitch.IsOn)
+                {
+                    progressBar.Value = 100;
+                }
             }
 
             toggleSwitch.Toggled += ToggleSwitch_Toggled;

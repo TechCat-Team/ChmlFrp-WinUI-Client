@@ -21,15 +21,11 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <Grid Grid.Column="0">
-                            <ComboBox Width="200" Grid.Row="0" PlaceholderText="请选择已启动的隧道">
-                                <x:String>#114514 ASDUWBAS</x:String>
-                                <x:String>#114514 ASDUWBAS</x:String>
-                                <x:String>#114514 ASDUWBAS</x:String>
-                                <x:String>#114514 ASDUWBAS</x:String>
+                            <ComboBox x:Name="ActiveTunnelsCombo" Width="200" Grid.Row="0" PlaceholderText="请选择已启动的隧道" SelectionChanged="ActiveTunnelsCombo_SelectionChanged">
                             </ComboBox>
                         </Grid>
                         <Grid Grid.Column="1" Margin="12,0,0,0">
-                            <Button AutomationProperties.Name="Pie" Background="Transparent" BorderBrush="Transparent">
+                            <Button AutomationProperties.Name="Pie" Background="Transparent" BorderBrush="Transparent" x:Name="ClearButton" Click="ClearButton_Click">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
@@ -45,7 +41,7 @@
                             </Button>
                         </Grid>
                         <Grid Grid.Column="2" Margin="8,0,0,0">
-                            <Button AutomationProperties.Name="Pie" Background="Transparent" BorderBrush="Transparent">
+                            <Button AutomationProperties.Name="Pie" Background="Transparent" BorderBrush="Transparent" x:Name="SaveButton" Click="SaveButton_Click">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
@@ -62,12 +58,8 @@
                         </Grid>
                     </Grid>
                     <Grid Margin="0,24,0,0" Grid.Row="1" CornerRadius="4" Background="{ThemeResource CardBackgroundFillColorDefault}">
-                        <RichTextBlock TextWrapping="Wrap" Margin="12,12,12,12">
-                            <Paragraph>First paragraph.</Paragraph>
-                            <Paragraph>Second paragraph.</Paragraph>
-                            <Paragraph>Third paragraph.
-                                <Bold>With an inline.</Bold>
-                            </Paragraph>
+                        <RichTextBlock x:Name="logRtb" TextWrapping="Wrap" Margin="12,12,12,12">
+
                         </RichTextBlock>
                     </Grid>
                 </Grid>

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ChmlFrp.Core")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b3cb3a0681a3741cb68dee5153f2f357f160f025")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8f7260a662dbfa41f50a1a65dc1995bad35452fd")]
 [assembly: System.Reflection.AssemblyProductAttribute("ChmlFrp.Core")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ChmlFrp.Core")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
