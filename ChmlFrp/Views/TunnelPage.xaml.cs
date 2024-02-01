@@ -9,6 +9,7 @@ using System.IO;
 using Microsoft.Windows.AppNotifications.Builder;
 using Microsoft.Windows.AppNotifications;
 using Windows.Storage.Streams;
+using System.Text;
 
 namespace ChmlFrp.Views;
 
@@ -59,125 +60,158 @@ public sealed partial class TunnelPage : Page
 
             if (tunnelInfo != null)
             {
-                // 获取对应的TunnelId
-                var tunnelId = tunnelInfo.TunnelId;
-                // 获取对应的NodeInfo
-                var nodeinfo = tunnelInfo.NodeInfo;
-                // 获取对应的TunnelName
-                var tunnelname = tunnelInfo.TunnelName;
-                // 获取对应的LinkAddress
-                var linkaddress = tunnelInfo.LinkAddress;
-                // 获取对应的IntranetInfo
-                var intranetinfo = tunnelInfo.IntranetInfo;
-                // 获取ToggleSwitch关联的ProgressBar实例
-                ProgressBar? progressBar = toggleSwitch.Tag as ProgressBar;
-
-                if (progressBar != null)
+                var isSwitchOn = toggleSwitch.IsOn;
+                // 如果操作为打开toggleWitch
+                if (isSwitchOn)
                 {
-                    // 根据ToggleSwitch的状态设置ProgressBar的IsIndeterminate属性
-                    tunnelStatus[tunnelInfo.TunnelId].IsActive = progressBar.IsIndeterminate = toggleSwitch.IsOn;
+                    // 获取对应的TunnelId
+                    var tunnelId = tunnelInfo.TunnelId;
+                    // 获取对应的NodeInfo
+                    var nodeinfo = tunnelInfo.NodeInfo;
+                    // 获取对应的TunnelName
+                    var tunnelname = tunnelInfo.TunnelName;
+                    // 获取对应的LinkAddress
+                    var linkaddress = tunnelInfo.LinkAddress;
+                    // 获取对应的IntranetInfo
+                    var intranetinfo = tunnelInfo.IntranetInfo;
+                    // 获取ToggleSwitch关联的ProgressBar实例
+                    ProgressBar? progressBar = toggleSwitch.Tag as ProgressBar;
 
-                    var folderName = "frpc";
-                    var executableName = "frpc.exe";
-
-                    // 获取当前应用程序的基础目录
-                    var currentDirectory = AppDomain.CurrentDomain.BaseDirectory;
-                    var folderPath = Path.Combine(currentDirectory, folderName);
-
-                    // 检查frp文件是否存在
-                    var executablePath = Path.Combine(folderPath, executableName);
-                    if (File.Exists(executablePath))
+                    if (progressBar != null)
                     {
-                        // 组装简易启动指令
-                        var Command = $"-u {UserInfo.Get.UserToken} -p {tunnelId}";
+                        // 根据ToggleSwitch的状态设置ProgressBar的IsIndeterminate属性
+                        tunnelStatus[tunnelInfo.TunnelId].IsActive = progressBar.IsIndeterminate = toggleSwitch.IsOn;
 
-                        // 创建 ProcessStartInfo 对象来配置进程启动信息
-                        ProcessStartInfo psi = new ProcessStartInfo
+                        var folderName = "frpc";
+                        var executableName = "frpc.exe";
+
+                        // 获取当前应用程序的基础目录
+                        var currentDirectory = AppDomain.CurrentDomain.BaseDirectory;
+                        var folderPath = Path.Combine(currentDirectory, folderName);
+
+                        // 检查frp文件是否存在
+                        var executablePath = Path.Combine(folderPath, executableName);
+                        if (File.Exists(executablePath))
                         {
-                            FileName = executableName,
-                            RedirectStandardInput = true,
-                            RedirectStandardOutput = true,
-                            RedirectStandardError = true,
-                            UseShellExecute = false,
-                            CreateNoWindow = true,
-                            WorkingDirectory = folderPath,
-                            Arguments = Command
-                        };
+                            // 组装简易启动指令
+                            var Command = $"frpc -u {UserInfo.Get.UserToken} -p {tunnelId}";
 
-                        // 启动进程
-                        using (Process process = new Process { StartInfo = psi })
+                            // 创建 ProcessStartInfo 对象来配置进程启动信息
+                            ProcessStartInfo psi = new ProcessStartInfo
+                            {
+                                FileName = "cmd.exe",
+                                RedirectStandardInput = true,
+                                RedirectStandardOutput = true,
+                                RedirectStandardError = true,
+                                UseShellExecute = false,
+                                CreateNoWindow = true,
+                                WorkingDirectory = folderPath,
+                                StandardOutputEncoding = Encoding.UTF8,
+                                //Arguments = Command
+                            };
+
+                            // 使用Task.Run在新的任务中并行执行异步操作
+                            await Task.Run(async () =>
+                            {
+                                // 启动进程
+                                using (Process process = new Process { StartInfo = psi })
+                                {
+                                    tunnelStatus[tunnelInfo.TunnelId].Process = process;
+                                    process.Start();
+                                    process.StandardInput.WriteLine(Command);
+
+                                    using (CancellationTokenSource cts = new CancellationTokenSource())
+                                    {
+                                        Task<string> outputTask = Task.Run(async () =>
+                                        {
+                                            StringBuilder outputBuilder = new StringBuilder();
+                                            var lineCount = 0;
+
+                                            // 异步读取输出流
+                                            while (!process.StandardOutput.EndOfStream)
+                                            {
+                                                var line = await process.StandardOutput.ReadLineAsync();
+
+                                                // 隐藏usertoken
+                                                line = line.Replace(UserInfo.Get.UserToken, string.Empty);
+
+                                                // 隐藏前4行内容
+                                                if (lineCount < 4)
+                                                {
+                                                    lineCount++;
+                                                    continue;
+                                                }
+
+                                                // 显示其他内容
+                                                outputBuilder.AppendLine(line);
+
+                                                // 在每次读取输出后更新outputTask
+                                                outputTask = Task.FromResult(outputBuilder.ToString());
+                                                var processedOutput = await outputTask;
+                                                var utf8Bytes = Encoding.UTF8.GetBytes(processedOutput);
+                                                tunnelStatus[tunnelInfo.TunnelId].Output = Encoding.UTF8.GetString(utf8Bytes);
+                                                tunnelStatus[tunnelId].Output = Encoding.UTF8.GetString(utf8Bytes);
+                                            }
+
+                                            return outputBuilder.ToString();
+                                        }, cts.Token);
+
+                                        // 等待6秒
+                                        await Task.Delay(6000);
+
+                                        // 检查输出是否包含指定字样
+                                        var finalOutput = await outputTask;
+                                        if (finalOutput.Contains("映射启动成功"))
+                                        {
+                                            progressBar.ShowError = false;
+                                            progressBar.ShowPaused = false;
+                                            progressBar.IsIndeterminate = false;
+                                            progressBar.Value = 100;
+                                        }
+                                        process.WaitForExit();
+                                    }
+                                }
+                            });
+                        }
+                        else
                         {
-                            tunnelStatus[tunnelInfo.TunnelId].Process = process;
-                            process.Start();
 
-                            // 将cmd命令写入标准输入流
-                            //process.StandardInput.WriteLine(Command);
-                            //process.StandardInput.Flush();
-                            //process.StandardInput.Close();                                
-
-                            // 异步读取输出流
-                            Task<string> outputTask = process.StandardOutput.ReadToEndAsync();
-
-                            // 等待10秒或直到输出中包含"映射启动成功"
-                            var success = await WaitForSuccess(outputTask, TimeSpan.FromSeconds(10), tunnelId);
-
-                            if (success)
-                            {
-                                tunnelStatus[tunnelInfo.TunnelId].Output = outputTask.Result;
-                                progressBar.ShowError = false;
-                                progressBar.ShowPaused = false;
-                                progressBar.IsIndeterminate = false;
-                                progressBar.Value = 100;
-                                var builder = new AppNotificationBuilder()
-                                    .AddText("映射启动成功");
-
-                                var notificationManager = AppNotificationManager.Default;
-                                //notificationManager.Show(builder.BuildNotification());
-                            }
-                            else
-                            {
-                                progressBar.IsIndeterminate = true;
-                                progressBar.ShowError = true;
-                                var builder = new AppNotificationBuilder()
-                                    .AddText("映射启动失败")
-                                    .AddText("详细信息请前往日志页面查看");
-
-                                var notificationManager = AppNotificationManager.Default;
-                                //notificationManager.Show(builder.BuildNotification());
-                            }
-
-                            process.WaitForExit();
                         }
                     }
-                    else
-                    {
-                    
-                    }
                 }
-            }
-        }
-    }
-    static async Task<bool> WaitForSuccess(Task<string> outputTask, TimeSpan timeout, int tunnelId)
-    {
-        DateTime startTime = DateTime.Now;
-
-        while ((DateTime.Now - startTime) < timeout)
-        {
-            await Task.Delay(100);
-            tunnelStatus[tunnelId].Output = outputTask.Result;
-            // 在异步任务未完成时检查输出
-            if (outputTask.IsCompleted)
-            {
-                var output = await outputTask;
-                if (output.Contains(UserInfo.Get.UserToken))
+                else
                 {
-                    return true;
+                   tunnelStatus[tunnelInfo.TunnelId].Process.Kill();
+                   tunnelStatus[tunnelInfo.TunnelId].Process.Dispose();
+                   tunnelStatus[tunnelInfo.TunnelId].Process = null;
                 }
             }
         }
-
-        return false;
     }
+    //static async Task<bool> WaitForSuccess(Task<string> outputTask, TimeSpan timeout, int tunnelId)
+    //{
+    //    DateTime startTime = DateTime.Now;
+
+    //    while ((DateTime.Now - startTime) < timeout)
+    //    {
+    //        await Task.Delay(1000);
+
+    //        var processedOutput = await outputTask;
+    //        var utf8Bytes = Encoding.UTF8.GetBytes(processedOutput);
+    //        tunnelStatus[tunnelId].Output = Encoding.UTF8.GetString(utf8Bytes);
+    //        // 在异步任务未完成时检查输出
+    //        if (outputTask.IsCompleted)
+    //        {
+    //            var output = await outputTask;
+    //            if (output.Contains("映射启动成功"))
+    //            {
+    //                return true;
+    //            }
+    //        }
+    //    }
+
+    //    return false;
+    //}
 
     private void toggleSwitch_Loaded(object sender, RoutedEventArgs e)
     {
@@ -203,4 +237,5 @@ public sealed partial class TunnelPage : Page
         }
 
     }
+
 }

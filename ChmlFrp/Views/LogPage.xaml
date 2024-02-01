@@ -21,7 +21,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <Grid Grid.Column="0">
-                            <ComboBox x:Name="ActiveTunnelsCombo" Width="200" Grid.Row="0" PlaceholderText="请选择已启动的隧道" SelectionChanged="ActiveTunnelsCombo_SelectionChanged">
+                            <ComboBox x:Name="ActiveTunnelsCombo" Width="200" Grid.Row="0" PlaceholderText="请选择隧道" SelectionChanged="ActiveTunnelsCombo_SelectionChanged">
                             </ComboBox>
                         </Grid>
                         <Grid Grid.Column="1" Margin="12,0,0,0">

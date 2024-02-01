@@ -30,7 +30,7 @@
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
-                                <ToggleSwitch Grid.Column="0" x:Name="toggleSwitch" Tag="{Binding ElementName=progressBar}" Loaded="toggleSwitch_Loaded"/>
+                                <ToggleSwitch Grid.Column="0" x:Name="atoggleSwitch" Tag="{Binding ElementName=progressBar}" Loaded="toggleSwitch_Loaded"/>
                                 <TextBlock Grid.Column="1" Margin="0,7,0,0" Style="{ThemeResource BodyTextStyle}" Text="{x:Bind TunnelName}" />
                             </Grid>
                             <Grid Margin="0,6,0,0">

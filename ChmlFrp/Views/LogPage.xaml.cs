@@ -1,4 +1,5 @@
-﻿using ChmlFrp.ViewModels;
+﻿using System.Text;
+using ChmlFrp.ViewModels;
 using CommunityToolkit.WinUI;
 using CommunityToolkit.WinUI.Helpers;
 using Microsoft.UI.Xaml;
@@ -46,7 +47,7 @@ public sealed partial class LogPage : Page
     private void ActiveTunnelsCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         logRtb.Blocks.Clear();
-        if (ActiveTunnelsCombo.SelectedItem != null) 
+        if (ActiveTunnelsCombo.SelectedItem != null)
         {
             var tunnelId = Convert.ToInt32(ActiveTunnelsCombo.SelectedItem.ToString());
             // Create a RichTextBlock, a Paragraph and a Run.
@@ -56,11 +57,17 @@ public sealed partial class LogPage : Page
             // Customize some properties on the RichTextBlock.
             logRtb.IsTextSelectionEnabled = true;
             logRtb.TextWrapping = TextWrapping.Wrap;
-            run.Text = TunnelPage.tunnelStatus[tunnelId].Output;
+
+            // Convert the string to UTF-8
+            byte[] utf8Bytes = Encoding.UTF8.GetBytes(TunnelPage.tunnelStatus[tunnelId].Output);
+            string utf8String = Encoding.UTF8.GetString(utf8Bytes);
+
+            run.Text = utf8String;
 
             // Add the Run to the Paragraph, the Paragraph to the RichTextBlock.
             paragraph.Inlines.Add(run);
             logRtb.Blocks.Add(paragraph);
         }
     }
+
 }

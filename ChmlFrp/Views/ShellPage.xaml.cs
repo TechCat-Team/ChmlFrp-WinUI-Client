@@ -132,7 +132,10 @@ public sealed partial class ShellPage : Page
     {
         args.Cancel = true;
         // 用户点击了"确定"按钮
+        myProgressBar.ShowPaused = false;
+        myProgressBar.ShowError = false;
         myProgressBar.Visibility = Visibility.Visible;
+        myInfoBar.IsOpen = false;
         var username = UsernameTextBox.Text;
         var password = PasswordBox.Password;
         // 检测用户名和密码是否为空
@@ -208,8 +211,8 @@ public sealed partial class ShellPage : Page
                             .AddText("ChmlFrp登录成功！")
                             .SetAppLogoOverride(new Uri($"{localImagePath}"), AppNotificationImageCrop.Circle);
 
-                            //var notificationManager = AppNotificationManager.Default;
-                            ////notificationManager.Show(builder.BuildNotification());
+                            var notificationManager = AppNotificationManager.Default;
+                            //notificationManager.Show(builder.BuildNotification());
                         }
                         else
                         {
@@ -218,8 +221,8 @@ public sealed partial class ShellPage : Page
                             .AddText($"欢迎{returnedUsername}！")
                             .AddText("ChmlFrp登录成功！");
 
-                            //var notificationManager = AppNotificationManager.Default;
-                            ////notificationManager.Show(builder.BuildNotification());
+                            var notificationManager = AppNotificationManager.Default;
+                            //notificationManager.Show(builder.BuildNotification());
                         }
                         // 保存用户信息到 App 属性中
                         UserInfo.Get.UserName = returnedUsername;
@@ -275,6 +278,7 @@ public sealed partial class ShellPage : Page
                 }
                 else
                 {
+                    myProgressBar.ShowError = true;
                     myInfoBar.IsOpen = true;
                     myInfoBar.Message = "https请求失败，请检查网络连接";
                 }
