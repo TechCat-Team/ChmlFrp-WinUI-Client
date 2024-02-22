@@ -58,14 +58,19 @@
                                 <TextBlock Grid.Column="1" Style="{ThemeResource BodyTextBlockStyle}" Opacity="0.6" Text="{x:Bind LinkAddress}" />
                             </Grid>
                             <CommandBar Margin="0,6,0,0" Background="Transparent" IsOpen="False" DefaultLabelPosition="Right">
-                                 <!--<AppBarButton Icon="Delete" Label="删除"/>
+                                <!--<AppBarButton Icon="Delete" Label="删除"/>
                                  <AppBarButton Icon="Edit" Label="修改"/>-->
-                                <AppBarButton Icon="Share" Label="分享"/>
+                                <AppBarButton Icon="Share" Label="分享" Click="ShareButton_Click"/>
                             </CommandBar>
                         </StackPanel>
                     </Grid>
                 </DataTemplate>
             </controls:AdaptiveGridView.ItemTemplate>
         </controls:AdaptiveGridView>
+        <TeachingTip x:Name="TeachingTip"
+	Title="复制成功"
+	Subtitle="隧道信息已复制到剪切板"
+	IsLightDismissEnabled="True">
+        </TeachingTip>
     </Grid>
 </Page>
