@@ -24,7 +24,7 @@
                             <ComboBox x:Name="ActiveTunnelsCombo" Width="200" Grid.Row="0" PlaceholderText="请选择隧道" SelectionChanged="ActiveTunnelsCombo_SelectionChanged">
                             </ComboBox>
                         </Grid>
-                        <Grid Grid.Column="1" Margin="12,0,0,0">
+                        <!--<Grid Grid.Column="1" Margin="12,0,0,0">
                             <Button AutomationProperties.Name="Pie" Background="Transparent" BorderBrush="Transparent" x:Name="ClearButton" Click="ClearButton_Click">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -39,7 +39,7 @@
                                     </Grid>
                                 </Grid>
                             </Button>
-                        </Grid>
+                        </Grid>-->
                         <Grid Grid.Column="2" Margin="8,0,0,0">
                             <Button AutomationProperties.Name="Pie" Background="Transparent" BorderBrush="Transparent" x:Name="SaveButton" Click="SaveButton_Click">
                                 <Grid>
@@ -57,11 +57,13 @@
                             </Button>
                         </Grid>
                     </Grid>
-                    <Grid Margin="0,24,0,0" Grid.Row="1" CornerRadius="4" Background="{ThemeResource CardBackgroundFillColorDefault}">
-                        <RichTextBlock x:Name="logRtb" TextWrapping="Wrap" Margin="12,12,12,12">
+                    <ScrollViewer>
+                        <Grid Margin="0,24,0,0" Grid.Row="1" CornerRadius="4" Background="{ThemeResource CardBackgroundFillColorDefault}">
+                            <RichTextBlock x:Name="logRtb" TextWrapping="Wrap" Margin="12,12,12,12">
 
-                        </RichTextBlock>
-                    </Grid>
+                            </RichTextBlock>
+                        </Grid>
+                    </ScrollViewer>
                 </Grid>
             </StackPanel>
         </ScrollViewer>

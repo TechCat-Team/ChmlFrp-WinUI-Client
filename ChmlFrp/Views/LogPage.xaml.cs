@@ -14,6 +14,8 @@ namespace ChmlFrp.Views;
 
 public sealed partial class LogPage : Page
 {
+    private DispatcherTimer timer;
+
     public LogViewModel ViewModel
     {
         get;
@@ -27,28 +29,25 @@ public sealed partial class LogPage : Page
         {
             ActiveTunnelsCombo.Items.Add(t.Key);
         }
+
+        // Initialize and start the timer
+        timer = new DispatcherTimer();
+        timer.Interval = TimeSpan.FromSeconds(1);
+        timer.Tick += Timer_Tick;
+        timer.Start();
     }
 
-    private void ClearButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+    private void Timer_Tick(object sender, object e)
     {
-        logRtb.Blocks.Clear();
+        // Update the log every second
+        UpdateLog();
     }
 
-    private async void SaveButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+    private void UpdateLog()
     {
         if (ActiveTunnelsCombo.SelectedItem != null)
         {
-            logRtb.SelectAll();
-            File.WriteAllText(ActiveTunnelsCombo.SelectedItem.ToString() + ".log", logRtb.SelectedText);
-            logRtb.Select(logRtb.SelectionStart, logRtb.SelectionStart);
-        }
-    }
-
-    private void ActiveTunnelsCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        logRtb.Blocks.Clear();
-        if (ActiveTunnelsCombo.SelectedItem != null)
-        {
+            logRtb.Blocks.Clear();
             var tunnelId = Convert.ToInt32(ActiveTunnelsCombo.SelectedItem.ToString());
             // Create a RichTextBlock, a Paragraph and a Run.
             Paragraph paragraph = new Paragraph();
@@ -70,4 +69,24 @@ public sealed partial class LogPage : Page
         }
     }
 
+    private void ClearButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+    {
+        logRtb.Blocks.Clear();
+    }
+
+    private async void SaveButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+    {
+        if (ActiveTunnelsCombo.SelectedItem != null)
+        {
+            logRtb.SelectAll();
+            File.WriteAllText(ActiveTunnelsCombo.SelectedItem.ToString() + ".log", logRtb.SelectedText);
+            logRtb.Select(logRtb.SelectionStart, logRtb.SelectionStart);
+        }
+    }
+
+    private void ActiveTunnelsCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        // Update the log when the selection changes
+        UpdateLog();
+    }
 }

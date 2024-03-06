@@ -14,6 +14,8 @@ using Windows.ApplicationModel.DataTransfer;
 using System.Net.NetworkInformation;
 using System.Net;
 using Windows.Services.Maps;
+using Windows.UI.Core;
+using Microsoft.Extensions.Logging;
 
 namespace ChmlFrp.Views;
 
@@ -48,10 +50,17 @@ public sealed partial class TunnelPage : Page
         {
             get; set;
         } = "";
+        public bool ProcessExited
+        {
+            get; set;
+        }
+        public int? ProcessId
+        {
+            get; set;
+        }
     }
 
     public static Dictionary<int, TunnelStatus> tunnelStatus = new();
-
     private async void ToggleSwitch_Toggled(object sender, RoutedEventArgs e)
     {
         // 获取ToggleSwitch实例
@@ -86,6 +95,11 @@ public sealed partial class TunnelPage : Page
                         // 根据ToggleSwitch的状态设置ProgressBar的IsIndeterminate属性
                         tunnelStatus[tunnelInfo.TunnelId].IsActive = progressBar.IsIndeterminate = toggleSwitch.IsOn;
 
+                        progressBar.ShowError = false;
+                        progressBar.ShowPaused = false;
+                        progressBar.IsIndeterminate = false;
+                        progressBar.Value = 100;
+
                         var folderName = "frpc";
                         var executableName = "frpc.exe";
 
@@ -103,7 +117,7 @@ public sealed partial class TunnelPage : Page
                             // 创建 ProcessStartInfo 对象来配置进程启动信息
                             ProcessStartInfo psi = new ProcessStartInfo
                             {
-                                FileName = executablePath, // 完整的 frpc.exe 文件路径
+                                FileName = executablePath,
                                 Arguments = Command, // 传递组装的指令作为参数
                                 RedirectStandardInput = true,
                                 RedirectStandardOutput = true,
@@ -121,6 +135,8 @@ public sealed partial class TunnelPage : Page
                                 using (Process process = new Process { StartInfo = psi })
                                 {
                                     tunnelStatus[tunnelInfo.TunnelId].Process = process;
+
+                                    // 启动进程
                                     process.Start();
 
                                     using (CancellationTokenSource cts = new CancellationTokenSource())
@@ -138,8 +154,8 @@ public sealed partial class TunnelPage : Page
                                                 // 隐藏usertoken
                                                 line = line.Replace(UserInfo.Get.UserToken, string.Empty);
 
-                                                // 隐藏前4行内容
-                                                if (lineCount < 4)
+                                                // 隐藏前0行内容
+                                                if (lineCount < 0)
                                                 {
                                                     lineCount++;
                                                     continue;
@@ -162,17 +178,14 @@ public sealed partial class TunnelPage : Page
                                         // 等待6秒
                                         await Task.Delay(6000);
 
-                                        // 检查输出是否包含指定字样
                                         var finalOutput = await outputTask;
                                         if (finalOutput.Contains("映射启动成功"))
                                         {
-                                            progressBar.ShowError = false;
-                                            progressBar.ShowPaused = false;
-                                            progressBar.IsIndeterminate = false;
-                                            progressBar.Value = 100;
-
+                                            //progressBar.ShowError = false;
+                                            //progressBar.ShowPaused = false;
+                                            //progressBar.IsIndeterminate = false;
+                                            //progressBar.Value = 100;
                                         }
-                                        process.WaitForExit();
                                     }
                                 }
                             });
@@ -185,21 +198,40 @@ public sealed partial class TunnelPage : Page
                 }
                 else
                 {
-                    tunnelStatus[tunnelInfo.TunnelId].IsActive = false;
-                    if (tunnelStatus[tunnelInfo.TunnelId].Process != null)
+                    TunnelInfo? tunnelInFo = (TunnelInfo)toggleSwitch.DataContext;
+
+                    if (tunnelInFo != null)
                     {
-                        try
+                        // 获取对应的TunnelId
+                        var tunnelId = tunnelInFo.TunnelId;
+
+                        foreach (var kvp in tunnelStatus)
                         {
-                            tunnelStatus[tunnelInfo.TunnelId].Process.Kill();
-                            tunnelStatus[tunnelInfo.TunnelId].Process.Dispose();
+                            var status = kvp.Value;
+                            if (status.Process != null && !status.ProcessExited && kvp.Key == tunnelId)
+                            {
+                                try
+                                {
+                                    status.Process.Kill();
+                                    status.Process.Dispose();
+                                    status.ProcessExited = true;
+                                }
+                                catch (InvalidOperationException ex)
+                                {
+                                    // 处理异常，例如记录日志或显示错误消息
+                                    Console.WriteLine($"Error occurred while killing process: {ex.Message}");
+                                }
+                            }
                         }
-                        catch (Exception ex)
-                        {
-                        }
-                        finally
-                        {
-                            tunnelStatus[tunnelInfo.TunnelId].Process = null;
-                        }
+
+                        // 获取ToggleSwitch关联的ProgressBar实例
+                        ProgressBar? progressBar = toggleSwitch.Tag as ProgressBar;
+                        progressBar.IsIndeterminate = false;
+                        progressBar.Value = 0;
+                        progressBar.ShowPaused = false;
+                        progressBar.ShowError = false;
+
+                        tunnelStatus[tunnelId].IsActive = false;
                     }
                 }
             }

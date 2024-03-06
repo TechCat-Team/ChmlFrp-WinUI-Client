@@ -79,6 +79,7 @@ public partial class App : Application
         }).
         Build();
 
+        // 实例化TunnelPage和TunnelViewModel
         UnhandledException += App_UnhandledException;
     }
 
@@ -93,45 +94,11 @@ public partial class App : Application
     {
         base.OnLaunched(args);
 
-        // 查询本地缓存是否包含用户信息
-        /*
-        //ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-
-        if (localSettings.Values.ContainsKey("UserToken"))
-        {
-            // 从本地缓存获取用户信息
-            var returnedUsername = (string)localSettings.Values["Username"];
-            var userImg = (string)localSettings.Values["UserImg"];
-            var userToken = (string)localSettings.Values["UserToken"];
-            var realname = (string)localSettings.Values["Realname"];
-            var bandwidth = (string)localSettings.Values["Bandwidth"];
-            var tunnel = (string)localSettings.Values["Tunnel"];
-            var tunnelstate = (string)localSettings.Values["TunnelState"];
-            var integral = (string)localSettings.Values["Integral"];
-            var term = (string)localSettings.Values["Term"];
-            var usergroup = (string)localSettings.Values["UserGroup"];
-            var qq = (string)localSettings.Values["QQ"];
-            var email = (string)localSettings.Values["Email"];
-            var userid = (string)localSettings.Values["UserID"];
-
-            // 将用户信息保存到App属性中
-            UserInfo.UserImage = userImg;
-            UserInfo.UserName = returnedUsername;
-            UserInfo.UserToken = userToken;
-            UserInfo.RealName = realname;
-            UserInfo.Bandwidth = bandwidth;
-            UserInfo.Tunnel = tunnel;
-            UserInfo.TunnelState = tunnelstate;
-            UserInfo.Integral = integral;
-            UserInfo.Term = term;
-            UserInfo.UserGroup = usergroup;
-            UserInfo.QQ = qq;
-            UserInfo.Email = email;
-            UserInfo.UserId = userid;
-        }*/
         UserInfo.TryLoadSettings();
         // 继续应用程序启动逻辑
         await App.GetService<IActivationService>().ActivateAsync(args);
+
+        var tunnelPage = new TunnelPage();
     }
 
 }

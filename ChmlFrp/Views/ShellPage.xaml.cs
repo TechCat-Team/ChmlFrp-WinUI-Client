@@ -105,10 +105,17 @@ public sealed partial class ShellPage : Page
     {
         var navigationService = App.GetService<INavigationService>();
 
-        var result = navigationService.GoBack();
-
-        args.Handled = result;
+        if (navigationService != null)
+        {
+            var result = navigationService.GoBack();
+            args.Handled = result;
+        }
+        else
+        {
+            args.Handled = false; // 没有处理该事件
+        }
     }
+
 
     private async void OnFooterButtonClick(object sender, RoutedEventArgs e)
     {
@@ -342,36 +349,6 @@ public sealed partial class ShellPage : Page
 
     private void ClearLocalSettings()
     {
-        // 获取本地设置对象
-        /*ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-
-        // 列举的本地缓存信息的键
-        string[] keysToClear = {
-        "Username",
-        "UserImg",
-        "UserToken",
-        "Realname",
-        "Bandwidth",
-        "Tunnel",
-        "TunnelState",
-        "Integral",
-        "Term",
-        "UserGroup",
-        "QQ",
-        "Email",
-        "UserID"
-        };
-
-        // 清除每个键对应的值
-        foreach (var key in keysToClear)
-        {
-            if (localSettings.Values.ContainsKey(key))
-            {
-                localSettings.Values.Remove(key);
-            }
-        }*/
-
-
         UserInfo.Get.UserName = null;
         UserInfo.Get.UserImage = null;
         UserInfo.Get.UserToken = null;
