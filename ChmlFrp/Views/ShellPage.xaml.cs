@@ -116,6 +116,16 @@ public sealed partial class ShellPage : Page
         }
     }
 
+    private async void OnUpdateTips(object sender, EventArgs e)
+    {
+        // 在按钮点击时，显示 ContentDialog
+        ContentDialogResult result = await update_tips.ShowAsync();
+
+        // 处理 ContentDialog 返回的结果
+        if (result == ContentDialogResult.Primary)
+        {
+        }
+    }
 
     private async void OnFooterButtonClick(object sender, RoutedEventArgs e)
     {

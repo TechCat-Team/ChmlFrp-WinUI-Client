@@ -188,6 +188,11 @@ Width="32" Height="32" Margin="-4"/>
                     <InfoBar x:Name="myInfoBar" IsClosable="False" Severity="Error" Title="登录失败" Margin="0,5,0,10" Grid.Row="3"/>
                 </Grid>
             </ContentDialog>
+        <ContentDialog x:Name="update_tips"
+   PrimaryButtonText="立即更新"
+   SecondaryButtonText="取消">
+            
+        </ContentDialog>
         <TeachingTip x:Name="Download_frpc"
 	Subtitle="未检测到frpc软件，frpc正在下载中"
 	PreferredPlacement="Auto"
