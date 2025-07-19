@@ -12,6 +12,7 @@ using Microsoft.Windows.AppNotifications.Builder;
 using Microsoft.Windows.AppNotifications;
 using Microsoft.UI.Xaml.Media.Imaging;
 using ChmlFrp.Core.Models;
+using Windows.UI.Popups;
 
 
 namespace ChmlFrp.Views;
@@ -167,7 +168,7 @@ public sealed partial class ShellPage : Page
         {
             using HttpClient httpClient = new HttpClient();
             // 构建请求的URL
-            var apiUrl = $"https://panel.chmlfrp.cn/api/login.php?username={username}&password={password}";
+            var apiUrl = $"http://cf-v2.uapis.cn/login?username={username}&password={password}";
 
             try
             {
@@ -188,33 +189,33 @@ public sealed partial class ShellPage : Page
                     if (apiResult.code != null)
                     {
                         // 获取用户数据
+                        var data = apiResult.data;
                         // 用户名
-                        string returnedUsername = apiResult.username;
+                        string returnedUsername = data.username;
                         // 用户头像
-                        string userImg = apiResult.userimg;
+                        string userImg = data.userimg;
                         // 用户token
-                        string userToken = apiResult.token;
+                        string userToken = data.token;
                         // 实名状态
-                        string realname = apiResult.realname;
+                        string realname = data.realname;
                         // 限速
-                        string bandwidth = apiResult.bandwidth;
+                        string bandwidth = data.bandwidth;
                         // 限制隧道
-                        string tunnel = apiResult.tunnel;
+                        string tunnel = data.tunnel;
                         // 当前隧道使用数
-                        string tunnelstate = apiResult.tunnelstate;
+                        string tunnelstate = data.tunnelstate;
                         // 当前积分
-                        string integral = apiResult.integral;
+                        string integral = data.integral;
                         // 权限组到期时间
-                        string term = apiResult.term;
+                        string term = data.term;
                         // 权限组
-                        string usergroup = apiResult.usergroup;
+                        string usergroup = data.usergroup;
                         // qq
-                        string qq = apiResult.qq;
+                        string qq = data.qq;
                         // 邮箱
-                        string email = apiResult.email;
+                        string email = data.email;
                         // 用户id
-                        string userid = apiResult.userid;
-
+                        string userid = data.userid;
 
                         // 如果userimg不为空,则缓存头像图片。
                         if (!string.IsNullOrEmpty(userImg))
@@ -229,7 +230,7 @@ public sealed partial class ShellPage : Page
                             .SetAppLogoOverride(new Uri($"{localImagePath}"), AppNotificationImageCrop.Circle);
 
                             var notificationManager = AppNotificationManager.Default;
-                            //notificationManager.Show(builder.BuildNotification());
+                            notificationManager.Show(builder.BuildNotification());
                         }
                         else
                         {
@@ -239,7 +240,7 @@ public sealed partial class ShellPage : Page
                             .AddText("ChmlFrp登录成功！");
 
                             var notificationManager = AppNotificationManager.Default;
-                            //notificationManager.Show(builder.BuildNotification());
+                            notificationManager.Show(builder.BuildNotification());
                         }
                         // 保存用户信息到 App 属性中
                         UserInfo.Get.UserName = returnedUsername;

@@ -13,6 +13,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.UI.Xaml;
 using ChmlFrp.Core.Models;
+using Microsoft.Windows.AppNotifications;
+using Microsoft.Windows.AppNotifications.Builder;
+using Windows.Graphics.Display;
 
 namespace ChmlFrp;
 
@@ -97,6 +100,9 @@ public partial class App : Application
         UserInfo.TryLoadSettings();
         // 继续应用程序启动逻辑
         await App.GetService<IActivationService>().ActivateAsync(args);
+
+        AppNotificationManager manager = AppNotificationManager.Default;
+        manager.Register();
 
         var tunnelPage = new TunnelPage();
     }
